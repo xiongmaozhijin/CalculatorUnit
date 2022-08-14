@@ -150,7 +150,7 @@ fun CalculatorUnit() {
                                         }
                                         else -> {
                                             val isNumByLastSr: Boolean = when (lastExpressStr) {
-                                                in "0".."9" -> {
+                                                in "0".."9", "." -> {
                                                     true
                                                 }
                                                 else -> {
@@ -158,7 +158,7 @@ fun CalculatorUnit() {
                                                 }
                                             }
                                             val isNumByCur: Boolean = when (label) {
-                                                in "0".."9" -> {
+                                                in "0".."9", "." -> {
                                                     true
                                                 }
                                                 else -> {
