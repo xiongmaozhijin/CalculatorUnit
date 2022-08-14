@@ -1,9 +1,11 @@
 package com.xiongmaozhijin.calculatorunit
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -24,6 +27,7 @@ import com.xiongmaozhijin.calculatorunit.ui.theme.CalculatorUnitTheme
 import kotlinx.coroutines.withContext
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -44,31 +48,57 @@ class MainActivity : ComponentActivity() {
 
 }
 
-val labelList = arrayOf(
-    arrayOf("C", "+/-", "←", "/"),
-    arrayOf("4", "5", "6", "——"),
-    arrayOf("1", "2", "3", "+"),
-    arrayOf("0", ".", "="),
-)
 
 @Preview
 @Composable
 fun CalculatorUnit() {
-    Column {
+    val labelList = arrayOf(
+        arrayOf("C", "+/-", "←", "/"),
+        arrayOf("4", "5", "6", "-"),
+        arrayOf("1", "2", "3", "+"),
+        arrayOf("0", ".", "="),
+    )
+
+    val context = LocalContext.current;
+
+    Column() {
         // display output layout
         Box(
             Modifier
+                .background(MaterialTheme.colors.onBackground)
                 .fillMaxWidth()
-                .fillMaxHeight(0.4f)
+                .fillMaxHeight(0.37f)
         ) {
-            Column {
-                Text(text = "0")
-                Text(text = "0")
+            Box(
+                Modifier
+                    .fillMaxHeight()
+                    .fillMaxWidth()) {
+                Box(modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .padding(8.dp)) {
+                    Text(
+                        fontSize = 24.sp,
+                        text = "0",
+                        color = Color.White,
+                        style = MaterialTheme.typography.body1,
+                    )
+                }
+                Box(modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(10.dp)) {
+                    Text(
+                        modifier = Modifier.align(Alignment.BottomEnd),
+                        fontSize = 28.sp,
+                        text = "0", color = Color.White, style = MaterialTheme.typography.body2
+                    )
+                }
             }
         }
         // input layout
         Box(
-            Modifier.fillMaxHeight()
+            Modifier
+                .fillMaxHeight()
+                .background(Color.DarkGray)
         ) {
             Column() {
                 labelList.forEach { rowArray ->
@@ -76,7 +106,6 @@ fun CalculatorUnit() {
                         Modifier
                             .weight(1f)
                             .fillMaxHeight(1f)
-                            .background(Color.White)
                     ) {
                         rowArray.forEach { label ->
                             CalculateButton(
@@ -87,8 +116,9 @@ fun CalculatorUnit() {
                                             "=" -> 0.75f
                                             else -> 1f
                                         }
-                                    )
-                                ,
+                                    ), onClick = {
+                                    Toast.makeText(context, label, Toast.LENGTH_SHORT).show()
+                                },
                                 label = label
                             )
                         }
@@ -103,13 +133,14 @@ fun CalculatorUnit() {
 }
 
 @Composable
-fun CalculateButton(modifier: Modifier, label: String = "0") {
+fun CalculateButton(modifier: Modifier, label: String = "0", onClick: () -> Unit) {
     Box(
         modifier
             .clip(RoundedCornerShape(50))
             .padding(6.dp)
             .background(MaterialTheme.colors.secondary)
-            .fillMaxHeight(),
+            .fillMaxHeight()
+            .clickable(true, onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
         Text(
